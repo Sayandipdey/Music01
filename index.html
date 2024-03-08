@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player Design</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://kit.fontawesome.com/cd381b00f0.js" crossorigin="anonymous"></script>
+    <style>
+        /* Add your custom CSS styles here */
+
+        /* Responsive styles */
+        @media only screen and (max-width: 600px) {
+            /* Adjust styles for smaller screens */
+            .music-player {
+                padding: 20px;
+            }
+            .music-player h1 {
+                font-size: 1.2em;
+            }
+            .music-player p {
+                font-size: 0.8em;
+            }
+            .controls {
+                font-size: 0.8em;
+            }
+        }
+
+        /* Circular container */
+        .container {
+            border-radius: 0%;
+            overflow: hidden;
+        }
+
+        /* Custom input range cursor */
+        input[type="range"] {
+            cursor: ew-resize; /* East-West resize cursor */
+        }
+
+        /* Timestamps */
+        .timestamp {
+            font-size: 0.8em;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="music-player">
+            <nav>
+                <div class="circle">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </div>
+                <div class="circle">
+                    <i class="fa-solid fa-caret-down"></i>
+                </div>
+            </nav>
+            <img src="./LionK.jpg" class="LionKing">
+            <h1>King of Pride Rock</h1>
+            <p>Hans Zimmer</p>
+
+            <audio id="songs">
+               <source src="./LionKing.mpeg" type="audio/mpeg">
+            </audio>
+            <input type="range" value="0" id="progress" min="0" max="27" step="1"> <!-- Adjust the max attribute according to your audio length -->
+            
+            <!-- Timestamps -->
+            <div class="timestamp">
+                <span id="current-time">0:00</span>
+                <span id="total-duration">0:00</span>
+            </div>
+
+            <div class="controls">
+                <div><i class="fa-solid fa-backward"></i></div>
+                <div id="playButton"><i class="fa-solid fa-play"></i></div>
+                <div><i class="fa-solid fa-forward"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let audio = document.getElementById("songs");
+        let progress = document.getElementById("progress");
+        let playButton = document.getElementById("playButton");
+        let isPlaying = false;
+
+        // Update progress bar as audio plays
+        audio.addEventListener("timeupdate", function() {
+            progress.value = audio.currentTime;
+            document.getElementById('current-time').innerText = formatTime(audio.currentTime);
+        });
+
+        // Update audio playback position when progress bar changes
+        progress.addEventListener("input", function() {
+            audio.currentTime = progress.value;
+        });
+
+        // Get total duration when metadata is loaded
+        audio.addEventListener("loadedmetadata", function() {
+            document.getElementById('total-duration').innerText = formatTime(audio.duration);
+        });
+
+        // Toggle play/pause on play button click
+        playButton.addEventListener("click", function() {
+            if (isPlaying) {
+                audio.pause();
+                playButton.innerHTML = '<i class="fa-solid fa-play"></i>';
+            } else {
+                audio.play();
+                playButton.innerHTML = '<i class="fa-solid fa-pause"></i>';
+            }
+            isPlaying = !isPlaying;
+        });
+
+        // Format time function
+        function formatTime(time) {
+            let minutes = Math.floor(time / 60);
+            let seconds = Math.floor(time % 60);
+            if (seconds < 10) {
+                seconds = "0" + seconds;
+            }
+            return minutes + ":" + seconds;
+        }
+    </script>
+</body>
+</html>
